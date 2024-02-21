@@ -1,0 +1,72 @@
+
+version: 2
+
+models:
+  
+  - name: staking_rates
+    description: "Seed containing contracts of assets that are staked. The grain of the seed is xx"
+    docs:
+      show: true
+    columns:
+      - name: start
+        description: "Start date of the staking contract"
+      - name: end
+        description: "End date of the staking contract"
+      - name: xx
+        description: "Primary key"
+      - name: assetReward
+        description: "Crypto asset that the reward is paid in"
+      - name: assetHold
+        description: "Crypto Asset that is staked"
+      - name: __source_ts_ms
+        description: "Staking event creation time in milliseconds since January 1, 1970"
+      - name: stakedAmount
+        description: "The amount of crypto assets staked"
+      - name: dailyRewardPerUnit
+        description: "The staking daily reward per asset unit staked"
+      - name: __deleted
+        description: "Boolean that identifies if a records is deleted"
+
+  - name: staking_rewards
+    description: "Seed containing rewards of assets that are staked. The grain of the seed is xx"
+    docs:
+      show: true
+    columns:
+      - name: date
+        description: "Date of the reward"
+      - name: type
+        description: "Type of reward: expected, realised, correction"
+      - name: xx
+        description: "Primary Key"
+      - name: rewardXx
+        description: "Foreign Key to reward rates"
+      - name: __source_ts_ms
+        description: "Reward event creation time in milliseconds since January 1, 1970"
+      - name: amount
+        description: "The amount of crypto assets rewarded"
+      - name: __deleted
+        description: "Boolean that identifies if a records is deleted"
+
+  - name: expected_rewards
+    description: "calculation of staked amount and rewards since 1st July 2023 till current"
+    docs:
+      show: true
+    columns:
+      - name: date
+        description: "Date of the reward"
+      - name: xx
+        description: "Primary key from rates table"
+      - name: rewardXx
+        description: "Foreign Key from rewards table"
+      - name: assetHold
+        description: "crypto asset staked"
+      - name: assetReward
+        description: "crypto asset awarded"
+      - name: type
+        description: "Type of rewards"
+      - name: stakedAmount
+        description: "Amount of crypto assses staked"
+      - name: reward_calc
+        description: "This is stakedAmount * dailyRewardPerUnit. comes from rates table"
+      - name: matching
+        description: "to check if the calculated reward from rates table matches amount in the rewards table"
