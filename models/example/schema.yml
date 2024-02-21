@@ -65,7 +65,9 @@ models:
       - name: type
         description: "Type of rewards"
       - name: stakedAmount
-        description: "Amount of crypto assses staked"
+        description: "Amount of crypto assses staked - calculated from stakedAmount and dailyRewardPerUnit"
+      - name: amount
+        description: "Amount of crypto assses staked - present in stake_rewards table"
       - name: reward_calc
         description: "This is stakedAmount * dailyRewardPerUnit. comes from rates table"
       - name: matching

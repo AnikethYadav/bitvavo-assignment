@@ -5,7 +5,7 @@ with staking_rates as (
 ,staking_rates_adding_unique_row as(
     select 
     *
-    ,row_number() over(order by xx, __source_ts_ms) as id
+    ,row_number() over(order by xx, __source_ts_ms) as id -- creating id for window function in next step (next_datetime)
     , stakedAmount*dailyRewardPerUnit as reward_calc -- calculating reward on the staked amount
     FROM staking_rates
     order by __source_ts_ms
@@ -54,11 +54,11 @@ select
     ,rate_query.reward_calc
     ,rewards_query.amount -- this comes from 'stake_Rewards.csv': there are some cases where amount exists, but we do not have relevant foreign key in stake.Rewards.csv
     ,case when round(rate_query.reward_calc,4) = round(rewards_query.amount,4) then "yes" else "no"
-    end as matching
+    end as matching -- this is to check if our numbers are close
 
     from date_series
     left join staking_unique_row_date_format rate_query on date_series.date_value = date(rate_query.datetime_format)
-    right join date_format_staking_rewards rewards_query on rewards_query.rewardXx = rate_query.xx
+    left join date_format_staking_rewards rewards_query on rewards_query.rewardXx = rate_query.xx
     AND rewards_query.datetime_format >= rate_query.datetime_format
     AND (rewards_query.datetime_format < COALESCE(rate_query.next_datetime_format, TIMESTAMP '9999-12-31 23:59:59 UTC'))
     -- where rewards_query.date>="2023-07-01"
